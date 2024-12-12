@@ -10,8 +10,8 @@ class MethodChannelRecognitionText extends RecognitionTextPlatform {
   final methodChannel = const MethodChannel('recognition_text');
 
   @override
-  Future<String?> regconizeText({ required String imageSource, List<String>? languageCodes }) async {
-    return await methodChannel.invokeMethod<String>('regconizeText', { "image_source" :  imageSource, "languageCodes": languageCodes });
+  Future<String?> regconizeText({ required Uint8List imageBytes, List<String>? languageCodes }) async {
+    return await methodChannel.invokeMethod<String>('regconizeText', { "imageBytes" :  imageBytes, "languageCodes": languageCodes });
   }
 
   

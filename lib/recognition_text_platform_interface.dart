@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'recognition_text_method_channel.dart';
@@ -23,7 +24,7 @@ abstract class RecognitionTextPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> regconizeText({ required String imageSource, List<String>? languageCodes }) {
+  Future<String?> regconizeText({ required Uint8List imageBytes, List<String>? languageCodes }) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

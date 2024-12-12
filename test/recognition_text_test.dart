@@ -1,3 +1,5 @@
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:recognition_text/recognition_text_platform_interface.dart';
 import 'package:recognition_text/recognition_text_method_channel.dart';
@@ -8,7 +10,7 @@ class MockRecognitionTextPlatform
     implements RecognitionTextPlatform {
 
   @override
-  Future<String?> regconizeText({ required String imageSource, List<String>? languageCodes }) => Future.value("Test");
+  Future<String?> regconizeText({ required Uint8List imageBytes, List<String>? languageCodes }) => Future.value("Test");
 }
 
 void main() {

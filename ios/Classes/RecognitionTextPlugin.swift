@@ -1,7 +1,6 @@
 import Flutter
 import UIKit
 import Vision
-import PhotosUI
 
 public class RecognitionTextPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -10,62 +9,27 @@ public class RecognitionTextPlugin: NSObject, FlutterPlugin {
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
     
-  var resultCallback: FlutterResult?
-  var langageCodes: [String]?
-
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     let arguments = call.arguments as! [String: Any]
-    let languageCodes = arguments["languageCodes"] as? [String]
-    let imageSource = ImagePickerSource(arguments["image_source"] as! String)
-    print("Got native params: \(languageCodes ?? []), \(imageSource)")
-      
+          
     switch call.method {
     case "regconizeText":
-        resultCallback = result
-        self.langageCodes = languageCodes
-        showPHPicker(source: imageSource)
+        let languageCodes = arguments["languageCodes"] as? [String]
+        let imageBytes = arguments["imageBytes"] as! FlutterStandardTypedData
+        print("Got native params: \(languageCodes ?? []), \(imageBytes)")
+        let image = UIImage(data: imageBytes.data)!
+        recognizeText(image: image) { recognizedText, error in
+            guard error == nil else {
+                result(error!)
+                return
+            }
+            result(recognizedText!)
+        }
+        
     default:
       result(FlutterMethodNotImplemented)
     }
   }
-}
-
-extension RecognitionTextPlugin: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        if let selectedImage = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
-            DispatchQueue.global().async {
-                self.recognizeText(image: selectedImage, languageCodes: self.langageCodes) { recognizedString, error in
-                    guard error == nil else {
-                        self.resultCallback?(error!)
-                        self.resultCallback = nil
-                        self.langageCodes = nil
-                        return
-                    }
-                    self.resultCallback?(recognizedString)
-                    self.resultCallback = nil
-                    self.langageCodes = nil
-                }
-            }
-        } else {
-            resultCallback = nil
-            langageCodes = nil
-        }
-        
-        picker.dismiss(animated: true, completion: nil) // Dismiss the picker
-    }
-
-    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil) // Dismiss the picker if canceled
-    }
-    
-    private func showPHPicker(source: ImagePickerSource = .photoLibrary) {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = source == .photoLibrary ? .photoLibrary : .camera // Or .camera for capturing photos
-        imagePicker.allowsEditing = true // Allow basic editing like cropping
-
-        UIApplication.shared.delegate?.window??.rootViewController?.present(imagePicker, animated: true)
-    }
 }
 
 extension RecognitionTextPlugin {
@@ -128,19 +92,4 @@ extension RecognitionTextPlugin {
     }
 }
 
-enum ImagePickerSource : String {
-    case camera = "camera"
-    case photoLibrary = "photoLibrary"
-    
-    init(_ rawValue: String) {
-        switch rawValue {
-        case "camera":
-            self = .camera
-        case "photoLibrary":
-            self = .photoLibrary
-        default:
-            fatalError("Invalid ImagePickerSource")
-        }
-    }
-}
 
