@@ -18,7 +18,7 @@ public class RecognitionTextPlugin: NSObject, FlutterPlugin {
         let imageBytes = arguments["imageBytes"] as! FlutterStandardTypedData
         print("Got native params: \(languageCodes ?? []), \(imageBytes)")
         let image = UIImage(data: imageBytes.data)!
-        recognizeText(image: image) { recognizedText, error in
+        recognizeText(image: image, languageCodes: languageCodes) { recognizedText, error in
             guard error == nil else {
                 result(error!)
                 return
