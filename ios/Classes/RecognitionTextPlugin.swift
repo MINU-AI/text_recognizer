@@ -33,16 +33,18 @@ public class RecognitionTextPlugin: NSObject, FlutterPlugin {
 extension RecognitionTextPlugin: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let selectedImage = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
-            recognizeText(image: selectedImage, languageCodes: langageCodes) { recognizedString, error in
-                guard error == nil else {
-                    self.resultCallback?(error!)
+            DispatchQueue.global().async {
+                self.recognizeText(image: selectedImage, languageCodes: self.langageCodes) { recognizedString, error in
+                    guard error == nil else {
+                        self.resultCallback?(error!)
+                        self.resultCallback = nil
+                        self.langageCodes = nil
+                        return
+                    }
+                    self.resultCallback?(recognizedString)
                     self.resultCallback = nil
                     self.langageCodes = nil
-                    return
                 }
-                self.resultCallback?(recognizedString)
-                self.resultCallback = nil
-                self.langageCodes = nil
             }
         } else {
             resultCallback = nil
