@@ -25,6 +25,16 @@ public class RecognitionTextPlugin: NSObject, FlutterPlugin {
             }
             result(recognizedText!)
         }
+    case "detectText":
+        let imageBytes = arguments["imageBytes"] as! FlutterStandardTypedData
+        let image = UIImage(data: imageBytes.data)!
+        recognizeText(image: image, level: .fast) { recognizedText, error in
+            guard error == nil else {
+                result(false)
+                return
+            }
+            result(!recognizedText!.isEmpty)
+        }
         
     default:
       result(FlutterMethodNotImplemented)
@@ -33,7 +43,7 @@ public class RecognitionTextPlugin: NSObject, FlutterPlugin {
 }
 
 extension RecognitionTextPlugin {
-    func recognizeText(image: UIImage, languageCodes: [String]? = nil, completion: @escaping ((String?, FlutterError?) -> Void)) {
+    func recognizeText(image: UIImage, languageCodes: [String]? = nil, level: VNRequestTextRecognitionLevel = .accurate, completion: @escaping ((String?, FlutterError?) -> Void)) {
         // Get the CGImage on which to perform requests.
         guard let cgImage = image.cgImage else {
             completion(nil, FlutterError(code: "", message: "Text recognition failed: input image is nil", details: nil))
@@ -70,7 +80,7 @@ extension RecognitionTextPlugin {
             
             completion(recognizedString.trimmingCharacters(in: .whitespacesAndNewlines), nil)
         }
-        request.recognitionLevel = .accurate
+        request.recognitionLevel = level
         if #available(iOS 16.0, *) {
             request.automaticallyDetectsLanguage = true
         }

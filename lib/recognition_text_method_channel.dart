@@ -14,5 +14,10 @@ class MethodChannelRecognitionText extends RecognitionTextPlatform {
     return await methodChannel.invokeMethod<String>('regconizeText', { "imageBytes" :  imageBytes, "languageCodes": languageCodes });
   }
 
+  @override
+  Future<bool?> detectText({ required Uint8List imageBytes }) async {
+    return await methodChannel.invokeMethod<bool>('detectText', { "imageBytes" :  imageBytes });
+  }
+
   
 }

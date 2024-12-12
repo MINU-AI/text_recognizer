@@ -27,4 +27,8 @@ abstract class RecognitionTextPlatform extends PlatformInterface {
   Future<String?> regconizeText({ required Uint8List imageBytes, List<String>? languageCodes }) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<bool?> detectText({ required Uint8List imageBytes }) async {
+    throw UnimplementedError('platformVersion() has not been implemented.');
+  }
 }

@@ -11,6 +11,12 @@ class MockRecognitionTextPlatform
 
   @override
   Future<String?> regconizeText({ required Uint8List imageBytes, List<String>? languageCodes }) => Future.value("Test");
+  
+  @override
+  Future<bool?> detectText({required Uint8List imageBytes}) {
+    // TODO: implement detectText
+    throw UnimplementedError();
+  }
 }
 
 void main() {

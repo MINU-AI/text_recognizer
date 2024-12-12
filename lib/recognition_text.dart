@@ -10,6 +10,10 @@ class RecognitionText {
   Future<String?> regconizeText({ required Uint8List imageBytes,  List<String>? langageCodes }) {
     return RecognitionTextPlatform.instance.regconizeText(imageBytes: imageBytes, languageCodes: langageCodes );
   }
+
+  Future<bool?> detectText({ required Uint8List imageBytes }) {
+    return RecognitionTextPlatform.instance.detectText(imageBytes: imageBytes);
+  }
 }
 
 enum ImagePickerSource {

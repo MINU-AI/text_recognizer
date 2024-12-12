@@ -33,8 +33,11 @@ class _MyAppState extends State<MyApp> {
       
       final text = await _recognitionTextPlugin.regconizeText(imageBytes: imageBytes) ?? 'Unknown text recognized';
       print(text);
+      final detectText = await _recognitionTextPlugin.detectText(imageBytes: imageBytes) ?? 'Unknown text recognized';
+      print("\nDetect text: $detectText");
 
-    } on PlatformException {
+    } catch(e) { 
+      print("Error: $e");
     }
 
     // If the widget was removed from the tree while the asynchronous platform
